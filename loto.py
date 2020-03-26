@@ -1,11 +1,14 @@
 import random
 from random import randrange
-import  pprint
+import pprint
+
+
 class Card:
     @staticmethod
     def generate_card():
 
-        # создаем структуру билета лото
+       # создаем структуру билета лото
+
         dx = 9
         dy = 3
         structure = [[0 for x in range(dx)] for y in range(dy)]
@@ -60,11 +63,24 @@ class Card:
 
         return spisok.pop(new_num)
 
+    @staticmethod
+    def win(spisok):
+        i = 0
+        for x in range(3):
+            for y in range(9):
+                if str(spisok[x][y]).isdigit() == True:
+                    i += 1
+        if i == 0:
+
+            return "win"
+
+
 class Player(Card):
     def __init__(self):
         self.card = self.generate_card()
 
     def pretty_print_generate(self):
+
         print("==========Это ваша карта=============")
         for x in range(3):
             print(self.card[x])
@@ -83,10 +99,10 @@ class Player(Card):
         else:
             return "False"
 
-    def _delete_card(self,num):
+    def _delete_card(self, num):
         check = False
 
-        for x in range (3):
+        for x in range(3):
             for y in range(9):
                 if self.card[x][y] == num:
                     self.card[x][y] = "--"
@@ -98,21 +114,18 @@ class Player(Card):
             return "False"
 
 
-
-
-
 class Human(Player):
     def __init__(self):
         self.card = self.generate_card()
 
-    def human_action_del(self,num):
+    def human_action_del(self, num):
 
-            if self._delete_card(num) == "False":
+        if self._delete_card(num) == "False":
 
-                return "error"
+            return "error"
 
-            else:
-                return self._delete_card(num)
+        else:
+            return self._delete_card(num)
 
     def human_action_cont(self, num):
 
@@ -128,10 +141,9 @@ class Computer(Player):
     def __init__(self):
         self.card = self.generate_card()
 
+    def action_robo(self, num):
 
-    def action_robo(self,num):
-
-        if self._delete_card(num)=="False":
+        if self._delete_card(num) == "False":
             print("компьютер решил продолжить игру")
             return self._continue_game(num)
         else:
@@ -139,19 +151,13 @@ class Computer(Player):
             return self._delete_card(num)
 
 
-
-
-
-
-
 human_1 = Human()
 robot_1 = Computer()
-card_1 =Card()
+card_1 = Card()
 
 
 
-
-
+print("==========Добро пожаловать в игру Лото!===============")
 spisok_bochonkov = [x for x in range(90)]
 
 while True:
@@ -163,6 +169,9 @@ while True:
     robot_1.action_robo(bochonok_1)
     if answer == "y":
         if human_1.human_action_del(bochonok_1) != "error":
+            if human_1.win(human_1.card) == "win":
+                print("Ура, вы победили!!!")
+                break
             continue
         else:
             print("Конец игры!!!")
