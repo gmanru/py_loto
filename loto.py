@@ -57,18 +57,18 @@ class Card:
         return structure
 
     @staticmethod
-    def bochonok_number(spisok):
+    def barrel_number(list):
 
-        new_num = randrange(1, len(spisok), 1)
+        new_num = randrange(1, len(list), 1)
 
-        return spisok.pop(new_num)
+        return list.pop(new_num)
 
     @staticmethod
-    def win(spisok):
+    def win(list):
         i = 0
         for x in range(3):
             for y in range(9):
-                if str(spisok[x][y]).isdigit() == True:
+                if str(list[x][y]).isdigit() == True:
                     i += 1
         if i == 0:
 
@@ -97,7 +97,7 @@ class Player(Card):
 
             return True
         else:
-            return "False"
+            return False
 
     def _delete_card(self, num):
         check = False
@@ -111,16 +111,16 @@ class Player(Card):
 
             return self.card
         else:
-            return "False"
+            return False
 
 
 class Human(Player):
     def __init__(self):
         self.card = self.generate_card()
-
+    
     def human_action_del(self, num):
 
-        if self._delete_card(num) == "False":
+        if self._delete_card(num) == False:
 
             return "error"
 
@@ -129,7 +129,7 @@ class Human(Player):
 
     def human_action_cont(self, num):
 
-        if self._continue_game(num) == "False":
+        if self._continue_game(num) == False:
 
             return "error"
 
@@ -143,7 +143,7 @@ class Computer(Player):
 
     def action_robo(self, num):
 
-        if self._delete_card(num) == "False":
+        if self._delete_card(num) == False:
             print("компьютер решил продолжить игру")
             return self._continue_game(num)
         else:
@@ -158,17 +158,17 @@ card_1 = Card()
 
 
 print("==========Добро пожаловать в игру Лото!===============")
-spisok_bochonkov = [x for x in range(90)]
+list_barrels = [x for x in range(90)]
 
 while True:
-    bochonok_1 = card_1.bochonok_number(spisok_bochonkov)
+    barrel_1 = card_1.barrel_number(list_barrels)
     human_1.pretty_print_generate()
-    print(f"========Выпало число {bochonok_1}============")
+    print(f"========Выпало число {barrel_1}============")
     answer = input("Зачеркнуть или продолжить? y/n ?")
     print("==============================================")
-    robot_1.action_robo(bochonok_1)
+    robot_1.action_robo(barrel_1)
     if answer == "y":
-        if human_1.human_action_del(bochonok_1) != "error":
+        if human_1.human_action_del(barrel_1) != "error":
             if human_1.win(human_1.card) == "win":
                 print("Ура, вы победили!!!")
                 break
@@ -177,7 +177,7 @@ while True:
             print("Конец игры!!!")
             break
     elif answer == "n":
-        if human_1.human_action_cont(bochonok_1) != "error":
+        if human_1.human_action_cont(barrel_1) != "error":
             continue
         else:
             print("Конец игры!!!")
