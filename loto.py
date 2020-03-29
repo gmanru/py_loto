@@ -1,25 +1,73 @@
-import random
 from random import randrange
-import pprint
 
 
-class Card:
+def decorate_human(f):
+    def wrapper(*args, **kwargs):
+        if f(*args, **kwargs) is False:
+
+            return "error"
+        else:
+            return f(*args, **kwargs)
+
+    return wrapper
+
+
+def decorate_robot(f):
+    def decorate_robot_inside(f1):
+        def wrapper(*args, **kwargs):
+            if f(*args, **kwargs):
+
+                return f(*args, **kwargs)
+            else:
+                return f1(*args, **kwargs)
+
+        return wrapper
+    return decorate_robot_inside
+
+
+class CardGame:
+
+    @staticmethod
+    def bochonok_number(spisok):
+
+        new_num = randrange(1, len(spisok), 1)
+
+        return spisok.pop(new_num)
+
+    @staticmethod
+    def win(spisok):
+        i = 0
+        for x in range(3):
+            for y in range(9):
+                if str(spisok[x][y]).isdigit() is True:
+                    i += 1
+        if i == 0:
+            return "win"
+
+
+class Player():
     @staticmethod
     def generate_card():
 
-       # создаем структуру билета лото
+        # generate mass structure
 
         dx = 9
         dy = 3
         structure = [[0 for x in range(dx)] for y in range(dy)]
 
-        # генерируем рандомные значения бочонков в билете
+        # print(structure)
+
+        # generate random values
 
         random_values = []
         while len(random_values) < 16:
             new_num = randrange(1, 90, 1)
             if new_num not in random_values:
                 random_values.append(new_num)
+
+        # print(random_values)
+
+        # get 3 lists_indexes for 3 rows
 
         numbers_1 = []
         while len(numbers_1) < 5:
@@ -39,13 +87,19 @@ class Card:
             if new_num not in numbers_3:
                 numbers_3.append(new_num)
 
+        # print(numbers_1)
+        # print(numbers_2)
+        # print(numbers_3)
         numbers_result = numbers_1 + numbers_2 + numbers_3
+
+        # print(numbers_result)
 
         for x in range(3):
             for y in range(9):
                 index = str(x) + str(y)
                 if index[0] == "0":
                     index = index[1]
+                # print(index)
 
                 if int(index) in numbers_result:
 
@@ -56,34 +110,16 @@ class Card:
 
         return structure
 
-    @staticmethod
-    def barrel_number(list):
-
-        new_num = randrange(1, len(list), 1)
-
-        return list.pop(new_num)
-
-    @staticmethod
-    def win(list):
-        i = 0
-        for x in range(3):
-            for y in range(9):
-                if str(list[x][y]).isdigit() == True:
-                    i += 1
-        if i == 0:
-
-            return "win"
-
-
-class Player(Card):
     def __init__(self):
         self.card = self.generate_card()
 
     def pretty_print_generate(self):
-
-        print("==========Это ваша карта=============")
+        print("==========This is your card=============")
+        # print(f'============== vipala cifra x ==============')
         for x in range(3):
             print(self.card[x])
+
+    # print("======= Zacherknut cifru??   y/n =======================")
 
     def _continue_game(self, num):
         check = False
@@ -93,10 +129,11 @@ class Player(Card):
                 if self.card[x][y] == num:
                     self.card[x][y] = "--"
                     check = True
-        if check == False:
+        if check is False:
 
             return True
         else:
+            # print(f'game is over(continue)({num})')
             return False
 
     def _delete_card(self, num):
@@ -104,81 +141,74 @@ class Player(Card):
 
         for x in range(3):
             for y in range(9):
-                if self.card[x][y] == num:
+                if self.card[x][y] is num:
                     self.card[x][y] = "--"
                     check = True
-        if check == True:
+        if check is True:
 
             return self.card
         else:
+            # print(f'game is over(delete)({num})')
             return False
 
 
 class Human(Player):
     def __init__(self):
         self.card = self.generate_card()
-    
+
+    @decorate_human
     def human_action_del(self, num):
+        return self._delete_card(num)
 
-        if self._delete_card(num) == False:
-
-            return "error"
-
-        else:
-            return self._delete_card(num)
-
+    @decorate_human
     def human_action_cont(self, num):
-
-        if self._continue_game(num) == False:
-
-            return "error"
-
-        else:
-            return "right"
+        return self._continue_game(num)
 
 
 class Computer(Player):
+
     def __init__(self):
         self.card = self.generate_card()
 
-    def action_robo(self, num):
+    def robot_delete(self, num):
+        if(self._delete_card(num)) is not False:
+            print("robot choise - delete")
+        return self._delete_card(num)
 
-        if self._delete_card(num) == False:
-            print("компьютер решил продолжить игру")
-            return self._continue_game(num)
-        else:
-            print("компьютер решил зачеркнуть бочонок")
-            return self._delete_card(num)
+    @decorate_robot(robot_delete)
+    def action_robo(self, num):
+        if(self._continue_game(num)) is not False:
+            print("robot choise - continue")
+        return self._continue_game(num)
 
 
 human_1 = Human()
 robot_1 = Computer()
-card_1 = Card()
+card_1 = CardGame
 
-
-
-print("==========Добро пожаловать в игру Лото!===============")
-list_barrels = [x for x in range(90)]
+print("==========Welcome to game===============")
+spisok_bochonkov = [x for x in range(90)]
 
 while True:
-    barrel_1 = card_1.barrel_number(list_barrels)
+    bochonok_1 = card_1.bochonok_number(spisok_bochonkov)
     human_1.pretty_print_generate()
-    print(f"========Выпало число {barrel_1}============")
-    answer = input("Зачеркнуть или продолжить? y/n ?")
+    print(f"========vipalo chislo {bochonok_1}============")
+    answer = input("Cut or continue? y/n ?")
     print("==============================================")
-    robot_1.action_robo(barrel_1)
+    robot_1.action_robo(bochonok_1)
     if answer == "y":
-        if human_1.human_action_del(barrel_1) != "error":
-            if human_1.win(human_1.card) == "win":
-                print("Ура, вы победили!!!")
+        if human_1.human_action_del(bochonok_1) != "error":
+            if card_1.win(human_1.card) == "win":
+                print("you are win!!!")
                 break
             continue
         else:
-            print("Конец игры!!!")
+            print("game is over!!!")
             break
     elif answer == "n":
-        if human_1.human_action_cont(barrel_1) != "error":
+        if human_1.human_action_cont(bochonok_1) != "error":
             continue
         else:
-            print("Конец игры!!!")
+            print(human_1.human_action_cont(bochonok_1))
+            print("game is over!!!")
             break
