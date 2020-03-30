@@ -1,30 +1,5 @@
 from random import randrange
 
-
-def decorate_human(f):
-    def wrapper(*args, **kwargs):
-        if f(*args, **kwargs) is False:
-
-            return "error"
-        else:
-            return f(*args, **kwargs)
-
-    return wrapper
-
-
-def decorate_robot(f):
-    def decorate_robot_inside(f1):
-        def wrapper(*args, **kwargs):
-            if f(*args, **kwargs):
-
-                return f(*args, **kwargs)
-            else:
-                return f1(*args, **kwargs)
-
-        return wrapper
-    return decorate_robot_inside
-
-
 class CardGame:
 
     @staticmethod
@@ -137,31 +112,25 @@ class Player:
 
 class Human(Player):
 
-    Player.card = Player.generate_card()
-
-    @decorate_human
-    def human_action_del(self, num):
-        return self._delete_card(num)
-
-    @decorate_human
-    def human_action_cont(self, num):
-        return self._continue_game(num)
+    def _delete_card(self, num):
+        result = super()._delete_card(num)
+        return "error" if not result else result
+    def _continue_game(self, num):
+        result = super()._continue_game(num)
+        return "error" if not result else result
 
 
 class Computer(Player):
 
-    Player.card = Player.generate_card()
-
-    def robot_delete(self, num):
-        if(self._delete_card(num)):
+    def _delete_card(self, num):
+        if(super()._delete_card(num)):
             print("компьютер решил зачеркнуть бочонок")
-        return self._delete_card(num)
+        return super()._delete_card(num)
 
-    @decorate_robot(robot_delete)
-    def action_robo(self, num):
-        if(self._continue_game(num)):
+    def _continue_game(self, num):
+        if(super()._continue_game(num)):
             print("компьютер решил продолжить игру")
-        return self._continue_game(num)
+        return super()._continue_game(num)
 
 
 human_1 = Human()
@@ -177,9 +146,9 @@ while True:
     print(f"========Выпало число {barrel_1}============")
     answer = input("Зачеркнуть или продолжить? y/n ?")
     print("==============================================")
-    robot_1.action_robo(barrel_1)
+    robot_1._continue_game(barrel_1)
     if answer == "y":
-        if human_1.human_action_del(barrel_1) != "error":
+        if human_1._delete_card(barrel_1) != "error":
             if card_1.win(human_1.card) == "win":
                 print("Ура, вы победили!!!")
                 break
@@ -188,9 +157,9 @@ while True:
             print("Конец игры!!!")
             break
     elif answer == "n":
-        if human_1.human_action_cont(barrel_1) != "error":
+        if human_1._continue_game(barrel_1) != "error":
             continue
         else:
-            print(human_1.human_action_cont(barrel_1))
+            print(human_1._continue_game(barrel_1))
             print("Конец игры!!!")
             break
