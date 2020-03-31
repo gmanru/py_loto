@@ -125,7 +125,7 @@ class Computer(Player):
     def _delete_card(self, num):
         if(super()._delete_card(num)):
             print("компьютер решил зачеркнуть бочонок")
-        return super()._delete_card(num)
+        return _delete_card(num)
 
     def _continue_game(self, num):
         if(super()._continue_game(num)):
@@ -149,6 +149,7 @@ while True:
     robot_1._continue_game(barrel_1)
     if answer == "y":
         if human_1._delete_card(barrel_1) != "error":
+            #print (human_1._delete_card(barrel_1))
             if card_1.win(human_1.card) == "win":
                 print("Ура, вы победили!!!")
                 break
