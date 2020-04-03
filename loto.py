@@ -1,11 +1,13 @@
 from random import randrange
 
+
 class CardGame:
 
     @staticmethod
     def barrel_number(checklist):
-
+        print(checklist)
         new_num = randrange(1, len(checklist), 1)
+        print(checklist.pop(new_num))
 
         return checklist.pop(new_num)
 
@@ -115,6 +117,7 @@ class Human(Player):
     def _delete_card(self, num):
         result = super()._delete_card(num)
         return "error" if not result else result
+
     def _continue_game(self, num):
         result = super()._continue_game(num)
         return "error" if not result else result
@@ -125,7 +128,7 @@ class Computer(Player):
     def _delete_card(self, num):
         if(super()._delete_card(num)):
             print("компьютер решил зачеркнуть бочонок")
-        return _delete_card(num)
+        return super()._delete_card(num)
 
     def _continue_game(self, num):
         if(super()._continue_game(num)):
@@ -144,23 +147,21 @@ while True:
     barrel_1 = card_1.barrel_number(list_barrels)
     human_1.pretty_print_generate()
     print(f"========Выпало число {barrel_1}============")
-    answer = input("Зачеркнуть или продолжить? y/n ?")
+    answer = input("Введите число 1 чтобы удалить бочонок с Вашей карточки \n Введите число 2 чтобы продолжить выбор бочонков \n")
     print("==============================================")
     robot_1._continue_game(barrel_1)
-    if answer == "y":
+    if answer == "1":
         if human_1._delete_card(barrel_1) != "error":
-            #print (human_1._delete_card(barrel_1))
             if card_1.win(human_1.card) == "win":
                 print("Ура, вы победили!!!")
                 break
             continue
         else:
-            print("Конец игры!!!")
+            print("Вы удалили бочонок, которого не было на карте, конец игры!!!")
             break
-    elif answer == "n":
+    elif answer == "2":
         if human_1._continue_game(barrel_1) != "error":
             continue
         else:
-            print(human_1._continue_game(barrel_1))
-            print("Конец игры!!!")
+            print("Вы продолжили игру, хотя на карте был выпавший бочонок, Конец игры!!!")
             break
