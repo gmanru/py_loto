@@ -5,10 +5,7 @@ class CardGame:
 
     @staticmethod
     def barrel_number(checklist):
-        print(checklist)
         new_num = randrange(1, len(checklist), 1)
-        print(checklist.pop(new_num))
-
         return checklist.pop(new_num)
 
     @staticmethod
