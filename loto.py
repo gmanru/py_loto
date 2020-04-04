@@ -136,32 +136,33 @@ class Computer(Player):
         return super()._continue_game(num)
 
 
-human_1 = Human()
-robot_1 = Computer()
-card_1 = CardGame
+if __name__ == "__main__":
+    human_1 = Human()
+    robot_1 = Computer()
+    card_1 = CardGame
 
-print("==========Добро пожаловать в игру Лото!===============")
-list_barrels = [x for x in range(90)]
+    print("==========Добро пожаловать в игру Лото!===============")
+    list_barrels = [x for x in range(91)]
 
-while True:
-    barrel_1 = card_1.barrel_number(list_barrels)
-    human_1.pretty_print_generate()
-    print(f"========Выпало число {barrel_1}============")
-    answer = input("Введите число 1 чтобы удалить бочонок с Вашей карточки \n Введите число 2 чтобы продолжить выбор бочонков \n")
-    print("==============================================")
-    robot_1._continue_game(barrel_1)
-    if answer == "1":
-        if human_1._delete_card(barrel_1) != "error":
-            if card_1.win(human_1.card) == "win":
-                print("Ура, вы победили!!!")
+    while True:
+        barrel_1 = card_1.barrel_number(list_barrels)
+        human_1.pretty_print_generate()
+        print(f"========Выпало число {barrel_1}============")
+        answer = input("Введите число 1 чтобы удалить бочонок с Вашей карточки \n Введите число 2 чтобы продолжить выбор бочонков \n")
+        print("==============================================")
+        robot_1._continue_game(barrel_1)
+        if answer == "1":
+            if human_1._delete_card(barrel_1) != "error":
+                if card_1.win(human_1.card) == "win":
+                    print("Ура, вы победили!!!")
+                    break
+                continue
+            else:
+                print("Вы удалили бочонок, которого не было на карте, конец игры!!!")
                 break
-            continue
-        else:
-            print("Вы удалили бочонок, которого не было на карте, конец игры!!!")
-            break
-    elif answer == "2":
-        if human_1._continue_game(barrel_1) != "error":
-            continue
-        else:
-            print("Вы продолжили игру, хотя на карте был выпавший бочонок, Конец игры!!!")
-            break
+        elif answer == "2":
+            if human_1._continue_game(barrel_1) != "error":
+                continue
+            else:
+                print("Вы продолжили игру, хотя на карте был выпавший бочонок, Конец игры!!!")
+                break
